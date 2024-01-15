@@ -3,6 +3,7 @@ package com.devstarrk.challenger.services;
 import com.devstarrk.challenger.dto.VideoDTO;
 import com.devstarrk.challenger.entities.Video;
 import com.devstarrk.challenger.repositories.VideoRepository;
+import com.devstarrk.challenger.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,5 +18,11 @@ public class VideoService {
     public Page<VideoDTO> findAll(Pageable pageable){
         Page<Video> result = repository.findAll(pageable);
         return result.map(VideoDTO::new );
+    }
+    @Transactional(readOnly = true)
+    public VideoDTO findById(Long id){
+        Video video = repository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Recurso nao encontrado"));
+        return new VideoDTO(video);
     }
 }
