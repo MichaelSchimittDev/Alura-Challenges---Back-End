@@ -27,6 +27,14 @@ public class VideoService {
         return new VideoDTO(video);
     }
     @Transactional
+    public ResponseEntity<VideoDTO> insert(VideoDTO dto){
+        Video entity = new Video();
+        copyDtoToEntity(dto, entity);
+        entity = repository.save(entity);
+        return ResponseEntity.ok(new VideoDTO(entity));
+    }
+
+    @Transactional
     public ResponseEntity<VideoDTO> update(Long id, VideoDTO dto){
         Video entity = repository.getReferenceById(id);
         copyDtoToEntity(dto,entity);
