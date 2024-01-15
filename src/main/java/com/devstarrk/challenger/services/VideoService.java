@@ -3,12 +3,15 @@ package com.devstarrk.challenger.services;
 import com.devstarrk.challenger.dto.VideoDTO;
 import com.devstarrk.challenger.entities.Video;
 import com.devstarrk.challenger.repositories.VideoRepository;
+import com.devstarrk.challenger.services.exceptions.DatabaseException;
 import com.devstarrk.challenger.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -40,6 +43,19 @@ public class VideoService {
         copyDtoToEntity(dto,entity);
         entity = repository.save(entity);
         return ResponseEntity.ok(new VideoDTO(entity));
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void delete(Long id){
+        if(!repository.existsById(id)){
+            throw new ResourceNotFoundException("Recurso nao encontrado");
+        }
+        try {
+            repository.deleteById(id);
+        }
+        catch (DataIntegrityViolationException e){
+            throw new DatabaseException("Falha na integridade referencial   ");
+        }
     }
 
     private void copyDtoToEntity(VideoDTO dto, Video entity) {

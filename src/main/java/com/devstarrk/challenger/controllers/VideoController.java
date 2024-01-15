@@ -40,4 +40,10 @@ public class VideoController {
         ResponseEntity<VideoDTO> response = service.update(id, dto);
         return ResponseEntity.ok(response.getBody());
     }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }
