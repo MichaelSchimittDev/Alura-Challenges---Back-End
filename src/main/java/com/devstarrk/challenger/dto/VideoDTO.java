@@ -33,7 +33,7 @@ public class VideoDTO implements Serializable {
             regexp = "^(https?|ftp)://[a-zA-Z0-9+&@#/%?=~_|!:,.;-]*[a-zA-Z0-9+&@#/%=~_|]",
             message = "A URL fornecida não é válida"
     )
-    @NotBlank(message = "A URL não pode estar em branco")
+    @NotBlank(message = "A URL não pode estar em branco.")
     private String url;
 
     public VideoDTO(Video entity) {
