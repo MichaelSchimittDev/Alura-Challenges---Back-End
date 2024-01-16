@@ -21,7 +21,7 @@ public class VideoService {
     @Transactional(readOnly = true)
     public Page<VideoDTO> findAll(Pageable pageable){
         Page<Video> result = repository.findAll(pageable);
-        return result.map(VideoDTO::new );
+        return result.map(VideoDTO::new);
     }
     @Transactional(readOnly = true)
     public VideoDTO findById(Long id){
