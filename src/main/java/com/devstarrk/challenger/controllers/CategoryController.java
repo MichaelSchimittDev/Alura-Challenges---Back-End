@@ -4,13 +4,13 @@ import com.devstarrk.challenger.dto.CategoryDTO;
 import com.devstarrk.challenger.services.CategoryService;
 
 
+import com.devstarrk.challenger.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/categorias")
@@ -21,5 +21,14 @@ public class CategoryController {
     public ResponseEntity<Page<CategoryDTO>> findAll(Pageable pageable){
         Page<CategoryDTO> dto = service.findAll(pageable);
         return ResponseEntity.ok(dto);
+    }
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<?> findById(@PathVariable Long id){
+        try {
+            CategoryDTO dto = service.findById(id);
+            return ResponseEntity.ok(dto);
+        } catch (ResourceNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }
