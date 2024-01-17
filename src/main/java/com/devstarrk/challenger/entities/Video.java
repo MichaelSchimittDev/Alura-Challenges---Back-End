@@ -18,4 +18,8 @@ public class Video {
     private String title;
     private String description;
     private String url;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 }
