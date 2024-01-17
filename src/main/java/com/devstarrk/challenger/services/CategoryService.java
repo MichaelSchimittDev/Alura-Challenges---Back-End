@@ -37,4 +37,12 @@ public class CategoryService {
         return ResponseEntity.ok(new CategoryDTO(category));
     }
 
+    @Transactional
+    public ResponseEntity<CategoryDTO> update(Long id, CategoryDTO dto){
+        Category category = repository.getReferenceById(id);
+        copy.CopyCategoryDtoToEntity(dto, category);
+        category = repository.save(category);
+        return ResponseEntity.ok(new CategoryDTO(category));
+    }
+
 }

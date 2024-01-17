@@ -21,24 +21,34 @@ import java.net.URI;
 public class CategoryController {
     @Autowired
     private CategoryService service;
+
     @GetMapping
-    public ResponseEntity<Page<CategoryDTO>> findAll(Pageable pageable){
+    public ResponseEntity<Page<CategoryDTO>> findAll(Pageable pageable) {
         Page<CategoryDTO> dto = service.findAll(pageable);
         return ResponseEntity.ok(dto);
     }
+
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id){
+    public ResponseEntity<?> findById(@PathVariable Long id) {
         try {
             CategoryDTO dto = service.findById(id);
             return ResponseEntity.ok(dto);
-        } catch (ResourceNotFoundException e){
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
     @PostMapping
-    public ResponseEntity<CategoryDTO> insert (@Valid @RequestBody CategoryDTO dto){
+    public ResponseEntity<CategoryDTO> insert(@Valid @RequestBody CategoryDTO dto) {
         ResponseEntity<CategoryDTO> response = service.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
         return ResponseEntity.created(uri).body(response.getBody());
     }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<CategoryDTO> update(@PathVariable Long id, @Valid @RequestBody CategoryDTO dto) {
+        ResponseEntity<CategoryDTO> response = service.update(id, dto);
+        return ResponseEntity.ok(response.getBody());
+    }
+
 }
