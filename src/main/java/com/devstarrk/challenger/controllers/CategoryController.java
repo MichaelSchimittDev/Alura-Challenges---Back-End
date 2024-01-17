@@ -1,6 +1,7 @@
 package com.devstarrk.challenger.controllers;
 
 import com.devstarrk.challenger.dto.CategoryDTO;
+import com.devstarrk.challenger.dto.VideoDTO;
 import com.devstarrk.challenger.services.CategoryService;
 
 
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/categorias")
@@ -35,6 +38,15 @@ public class CategoryController {
             return ResponseEntity.ok(dto);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+    @GetMapping(value = "/{id}/videos")
+    public ResponseEntity<List<VideoDTO>> findVideosByCategoryId(@PathVariable Long id) {
+        try {
+            List<VideoDTO> videos = service.findVideosByCategoryId(id);
+            return ResponseEntity.ok(videos);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
         }
     }
 

@@ -1,6 +1,7 @@
 package com.devstarrk.challenger.services;
 
 import com.devstarrk.challenger.dto.CategoryDTO;
+import com.devstarrk.challenger.dto.VideoDTO;
 import com.devstarrk.challenger.entities.Category;
 import com.devstarrk.challenger.entities.CopyDtoToEntity;
 import com.devstarrk.challenger.repositories.CategoryRepository;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CategoryService {
     @Autowired
@@ -26,12 +30,22 @@ public class CategoryService {
         Page<Category> result = repository.findAll(pageable);
         return result.map(CategoryDTO::new);
     }
+
     @Transactional(readOnly = true)
     public CategoryDTO findById(Long id){
         Category category = repository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Categoria com o ID " + id + " nao encontrada"));
         return new CategoryDTO(category);
     }
+
+    @Transactional(readOnly = true)
+    public List<VideoDTO> findVideosByCategoryId(Long categoryId) {
+        Category category = repository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria com o ID " + categoryId + " nao encontrada"));
+
+        return category.getVideos().stream().map(VideoDTO::new).collect(Collectors.toList());
+    }
+
     @Transactional
     public ResponseEntity<CategoryDTO> insert(CategoryDTO dto){
         Category category = new Category();
