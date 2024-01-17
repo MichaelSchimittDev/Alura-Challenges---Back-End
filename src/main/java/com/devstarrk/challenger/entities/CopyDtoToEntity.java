@@ -2,7 +2,9 @@ package com.devstarrk.challenger.entities;
 
 import com.devstarrk.challenger.dto.CategoryDTO;
 import com.devstarrk.challenger.dto.VideoDTO;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CopyDtoToEntity {
 
     public void CopyVideoDtoToEntity(VideoDTO dto, Video entity){
