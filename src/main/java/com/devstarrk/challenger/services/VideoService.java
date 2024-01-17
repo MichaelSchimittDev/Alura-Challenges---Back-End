@@ -1,6 +1,7 @@
 package com.devstarrk.challenger.services;
 
 import com.devstarrk.challenger.dto.VideoDTO;
+import com.devstarrk.challenger.entities.CopyDtoToEntity;
 import com.devstarrk.challenger.entities.Video;
 import com.devstarrk.challenger.repositories.VideoRepository;
 import com.devstarrk.challenger.services.exceptions.DatabaseException;
@@ -18,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class VideoService {
     @Autowired
     private VideoRepository repository;
+    @Autowired
+    private CopyDtoToEntity copy;
     @Transactional(readOnly = true)
     public Page<VideoDTO> findAll(Pageable pageable){
         Page<Video> result = repository.findAll(pageable);
@@ -32,7 +35,7 @@ public class VideoService {
     @Transactional
     public ResponseEntity<VideoDTO> insert(VideoDTO dto){
         Video entity = new Video();
-        copyDtoToEntity(dto, entity);
+        copy.CopyVideoDtoToEntity(dto, entity);
         entity = repository.save(entity);
         return ResponseEntity.ok(new VideoDTO(entity));
     }
@@ -40,7 +43,7 @@ public class VideoService {
     @Transactional
     public ResponseEntity<VideoDTO> update(Long id, VideoDTO dto){
         Video entity = repository.getReferenceById(id);
-        copyDtoToEntity(dto,entity);
+        copy.CopyVideoDtoToEntity(dto,entity);
         entity = repository.save(entity);
         return ResponseEntity.ok(new VideoDTO(entity));
     }
@@ -56,11 +59,5 @@ public class VideoService {
         catch (DataIntegrityViolationException e){
             throw new DatabaseException("Falha na integridade referencial   ");
         }
-    }
-
-    private void copyDtoToEntity(VideoDTO dto, Video entity) {
-        entity.setTitle(dto.getTitle());
-        entity.setDescription(dto.getDescription());
-        entity.setUrl(dto.getUrl());
     }
 }
