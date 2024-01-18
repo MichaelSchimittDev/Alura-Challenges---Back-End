@@ -36,10 +36,16 @@ public class VideoDTO implements Serializable {
     @NotBlank(message = "A URL não pode estar em branco")
     private String url;
 
+    private CategoryDTO category;
+
     public VideoDTO(Video entity) {
         id = entity.getId();
         title = entity.getTitle();
         description = entity.getDescription();
         url = entity.getUrl();
+
+        if (entity.getCategory() != null) {
+            category = new CategoryDTO(entity.getCategory());
+        }
     }
 }

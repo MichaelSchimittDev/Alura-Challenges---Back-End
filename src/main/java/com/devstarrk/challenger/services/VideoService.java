@@ -1,8 +1,10 @@
 package com.devstarrk.challenger.services;
 
 import com.devstarrk.challenger.dto.VideoDTO;
+import com.devstarrk.challenger.entities.Category;
 import com.devstarrk.challenger.entities.CopyDtoToEntity;
 import com.devstarrk.challenger.entities.Video;
+import com.devstarrk.challenger.repositories.CategoryRepository;
 import com.devstarrk.challenger.repositories.VideoRepository;
 import com.devstarrk.challenger.services.exceptions.DatabaseException;
 import com.devstarrk.challenger.services.exceptions.ResourceNotFoundException;
@@ -19,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class VideoService {
     @Autowired
     private VideoRepository repository;
+    @Autowired
+    private CategoryRepository categoryRepository;
     @Autowired
     private CopyDtoToEntity copy;
     @Transactional(readOnly = true)
@@ -42,6 +46,16 @@ public class VideoService {
     public ResponseEntity<VideoDTO> insert(VideoDTO dto){
         Video entity = new Video();
         copy.CopyVideoDtoToEntity(dto, entity);
+
+        if(dto.getCategory() == null){
+            Category defaultCategory = categoryRepository.findById(1L).orElseThrow(
+                    () -> new ResourceNotFoundException("Categoria padrão não encontrada"));
+            entity.setCategory(defaultCategory);
+        } else{
+            entity.setCategory(categoryRepository.findById(dto.getCategory().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada")));
+        }
+
         entity = repository.save(entity);
         return ResponseEntity.ok(new VideoDTO(entity));
     }
