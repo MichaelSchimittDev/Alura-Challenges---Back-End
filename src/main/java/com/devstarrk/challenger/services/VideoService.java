@@ -32,6 +32,12 @@ public class VideoService {
                 () -> new ResourceNotFoundException("Recurso nao encontrado"));
         return new VideoDTO(video);
     }
+
+    @Transactional(readOnly = true)
+    public Page<VideoDTO> findByTitle(String title, Pageable pageable){
+        Page<Video> result = repository.findByTitleContainingIgnoreCase(title, pageable);
+        return result.map(VideoDTO::new);
+    }
     @Transactional
     public ResponseEntity<VideoDTO> insert(VideoDTO dto){
         Video entity = new Video();

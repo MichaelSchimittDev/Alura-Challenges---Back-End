@@ -19,8 +19,15 @@ public class VideoController {
     @Autowired
     private VideoService service;
     @GetMapping
-    public ResponseEntity<Page<VideoDTO>> findAll(Pageable pageable){
-        Page<VideoDTO> dto = service.findAll(pageable);
+    public ResponseEntity<Page<VideoDTO>> findAll(@RequestParam(name = "search", required = false)String search, Pageable pageable){
+        Page<VideoDTO> dto;
+
+        if(search != null && !search.isEmpty()){
+            dto = service.findByTitle(search, pageable);
+        }else {
+            dto = service.findAll(pageable);
+        }
+
         return ResponseEntity.ok(dto);
     }
     @GetMapping(value = "/{id}")
